@@ -8,3 +8,10 @@ Based on this data, I believe Datetime is the best choice in most scenarios. Her
 - It uses only 1 byte more than its counterparts.
 - It allows for a greater date range (from year 1000 to 9999).
 
+## 事物隔离级别
+
+隔离性主要区别在读
+RR RC 使用MVVC+排他锁
+RR 写（当前读）会加间隙 
+java spring 同类方法调用 expection不回滚
+mysql 默认RR的原因是5.0以前binlog设计只支持statment,  RR更多应用场景是在报表中
