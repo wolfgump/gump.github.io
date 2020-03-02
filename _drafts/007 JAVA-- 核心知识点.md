@@ -52,3 +52,35 @@ int index = hash(key) & (capacity - 1)
 
 因为 A % B = A & (B - 1)，所以，(h ^ (h >>> 16)) & (capitity -1) = (h ^ (h >>> 16)) % capitity，可以看出这里本质上是使用了「除留余数法」
 
+## ThreadLocal
+
+存在的意义：
+
+现在间的数据共享，原型的方法就要定义一个Map<Thread,Value>,这么做对同一个Map多线程访问，会有锁竞争，并发能力差
+
+数据结构：
+
+<img src="../img/java/threadlocal.png" alt="threadlocal" style="zoom:50%;" />
+
+弱引用：
+
+ThreadLocalMap的Key ThreadLocal是弱引用，当程序中不再用到ThreadLocal时，此时只剩ThreadLocalMap的弱引用，会被回收掉
+
+问题：
+
+ThreadLocalMap的Key是弱引用，value是强引用，就会出现key=null,value有值得情况，导致整个Entry不能回收；为了解决这个问题，ThreadLocalMap的get 和set每次都会线性探测key=null的Entry 清楚掉；但这不能彻底解决问题，比如最后一次get后，最后一次的Entry之后没有get set了，就清除不掉了，最坏的情况，这个线程在线程池中一直不释放，就导致线程泄漏，所以又增加了一个remove方法，在每次请求结束都要调用一次remove,防止最坏情况出现
+
+hash冲突：
+
+采用的是线性探测法解决
+
+关键代码：
+
+获取map: 直接获取当前线程的变量
+
+```java
+ThreadLocalMap getMap(Thread t) {
+    return t.threadLocals;
+}
+```
+
