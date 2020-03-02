@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn2:process id="Process_7fa3fe05-4e2d-11ea-a3fa-00163e0d1f96" name="活动审批流程" isExecutable="true" camunda:versionTag="活动审批流程" camunda:topic="ZMBIZ_HALO_FLOW">
+    <bpmn2:startEvent id="StartEvent_0g8ullh" camunda:formKey="zhong_test_form">
+      <bpmn2:outgoing>SequenceFlow_1clspag</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:sequenceFlow id="SequenceFlow_1clspag" sourceRef="StartEvent_0g8ullh" targetRef="Task_06i5ant" />
+    <bpmn2:userTask id="Task_06i5ant" name="谢淑媛" camunda:candidateUsers="828">
+      <bpmn2:incoming>SequenceFlow_1clspag</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_0sihc7f</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:exclusiveGateway id="ExclusiveGateway_04hqrxw">
+      <bpmn2:incoming>SequenceFlow_0sihc7f</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_105ok6h</bpmn2:outgoing>
+      <bpmn2:outgoing>SequenceFlow_02fn8fk</bpmn2:outgoing>
+    </bpmn2:exclusiveGateway>
+    <bpmn2:sequenceFlow id="SequenceFlow_0sihc7f" sourceRef="Task_06i5ant" targetRef="ExclusiveGateway_04hqrxw" />
+    <bpmn2:sequenceFlow id="SequenceFlow_105ok6h" name="通过" sourceRef="ExclusiveGateway_04hqrxw" targetRef="Task_0u2fy39">
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression">${pass==true}</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:serviceTask id="Task_0u2fy39" name="审批中通知">
+      <bpmn2:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="url">http://open.uat.zmops.cc/api/zmbiz-fms-activity/api/application/audit/updateStatus</camunda:inputParameter>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="content-type">application/json</camunda:entry>
+                <camunda:entry key="accept">application/json</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="payload">
+              <camunda:script scriptFormat="javascript">var applicationId = execution.getVariable("applicationId");
+var flowProcessId = execution.getVariable("flowProcessId");
+var flowTaskId = execution.getVariable("flowTaskId");
+var pass = execution.getVariable("pass");
+var auditRemark = execution.getVariable("auditRemark");
+var auditUserId = execution.getVariable("auditUserId");
+
+
+'{"applicationId":"'+applicationId+'","flowProcessId":"'+flowProcessId+'","flowTaskId":"'+flowTaskId+'","pass":"'+pass+'","auditRemark":"'+auditRemark+'","auditUserId":"'+auditUserId+'","auditStatus":"1"}';</camunda:script>
+            </camunda:inputParameter>
+            <camunda:outputParameter name="response">
+              <camunda:script scriptFormat="javascript">S(response).prop("message").stringValue()</camunda:script>
+            </camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_105ok6h</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_0g1n405</bpmn2:outgoing>
+    </bpmn2:serviceTask>
+    <bpmn2:userTask id="Task_0xcpgnu" name="钟国涛" camunda:candidateUsers="372125">
+      <bpmn2:incoming>SequenceFlow_0g1n405</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_0dy6w8b</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:exclusiveGateway id="ExclusiveGateway_11asa5h">
+      <bpmn2:incoming>SequenceFlow_0dy6w8b</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_0ul7rvf</bpmn2:outgoing>
+      <bpmn2:outgoing>SequenceFlow_0lbpwv8</bpmn2:outgoing>
+    </bpmn2:exclusiveGateway>
+    <bpmn2:sequenceFlow id="SequenceFlow_0dy6w8b" sourceRef="Task_0xcpgnu" targetRef="ExclusiveGateway_11asa5h" />
+    <bpmn2:sequenceFlow id="SequenceFlow_0ul7rvf" sourceRef="ExclusiveGateway_11asa5h" targetRef="Task_09m29he">
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression">${pass==true}</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:serviceTask id="Task_09m29he" name="审核通过通知">
+      <bpmn2:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="url">http://open.uat.zmops.cc/api/zmbiz-fms-activity/api/application/audit/updateStatus</camunda:inputParameter>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="content-type">application/json</camunda:entry>
+                <camunda:entry key="accept">application/json</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="payload">
+              <camunda:script scriptFormat="javascript">var applicationId = execution.getVariable("applicationId");
+var flowProcessId = execution.getVariable("flowProcessId");
+var flowTaskId = execution.getVariable("flowTaskId");
+var pass = execution.getVariable("pass");
+var auditRemark = execution.getVariable("auditRemark");
+var auditUserId = execution.getVariable("auditUserId");
+
+
+'{"applicationId":"'+applicationId+'","flowProcessId":"'+flowProcessId+'","flowTaskId":"'+flowTaskId+'","pass":"'+pass+'","auditRemark":"'+auditRemark+'","auditUserId":"'+auditUserId+'","auditStatus":"2"}';</camunda:script>
+            </camunda:inputParameter>
+            <camunda:outputParameter name="response">
+              <camunda:script scriptFormat="javascript">S(response).prop("message").stringValue()</camunda:script>
+            </camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_0ul7rvf</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_1krlqb0</bpmn2:outgoing>
+    </bpmn2:serviceTask>
+    <bpmn2:endEvent id="EndEvent_1ruf7fs">
+      <bpmn2:incoming>SequenceFlow_1krlqb0</bpmn2:incoming>
+      <bpmn2:incoming>SequenceFlow_19n9krs</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="SequenceFlow_1krlqb0" sourceRef="Task_09m29he" targetRef="EndEvent_1ruf7fs" />
+    <bpmn2:sequenceFlow id="SequenceFlow_0lbpwv8" sourceRef="ExclusiveGateway_11asa5h" targetRef="Task_1m6sxwo">
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression">${pass==false}</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="SequenceFlow_02fn8fk" name="拒绝" sourceRef="ExclusiveGateway_04hqrxw" targetRef="Task_1m6sxwo">
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression">${pass==false}</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="SequenceFlow_19n9krs" sourceRef="Task_1m6sxwo" targetRef="EndEvent_1ruf7fs" />
+    <bpmn2:serviceTask id="Task_1m6sxwo" name="审核拒绝通知">
+      <bpmn2:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="url">http://open.uat.zmops.cc/api/zmbiz-fms-activity/api/application/audit/updateStatus</camunda:inputParameter>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="content-type">application/json</camunda:entry>
+                <camunda:entry key="accept">application/json</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="payload">
+              <camunda:script scriptFormat="javascript">var applicationId = execution.getVariable("applicationId");
+var flowProcessId = execution.getVariable("flowProcessId");
+var flowTaskId = execution.getVariable("flowTaskId");
+var pass = execution.getVariable("pass");
+var auditRemark = execution.getVariable("auditRemark");
+var auditUserId = execution.getVariable("auditUserId");
+
+
+'{"applicationId":"'+applicationId+'","flowProcessId":"'+flowProcessId+'","flowTaskId":"'+flowTaskId+'","pass":"'+pass+'","auditRemark":"'+auditRemark+'","auditUserId":"'+auditUserId+'","auditStatus":"3"}';</camunda:script>
+            </camunda:inputParameter>
+            <camunda:outputParameter name="response">
+              <camunda:script scriptFormat="javascript">S(response).prop("message").stringValue()</camunda:script>
+            </camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_02fn8fk</bpmn2:incoming>
+      <bpmn2:incoming>SequenceFlow_0lbpwv8</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_19n9krs</bpmn2:outgoing>
+    </bpmn2:serviceTask>
+    <bpmn2:sequenceFlow id="SequenceFlow_0g1n405" sourceRef="Task_0u2fy39" targetRef="Task_0xcpgnu" />
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_7fa3fe05-4e2d-11ea-a3fa-00163e0d1f96">
+      <bpmndi:BPMNShape id="StartEvent_0g8ullh_di" bpmnElement="StartEvent_0g8ullh">
+        <dc:Bounds x="162" y="282" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1clspag_di" bpmnElement="SequenceFlow_1clspag">
+        <di:waypoint x="198" y="300" />
+        <di:waypoint x="240" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="UserTask_1n6s9hr_di" bpmnElement="Task_06i5ant">
+        <dc:Bounds x="240" y="260" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveGateway_04hqrxw_di" bpmnElement="ExclusiveGateway_04hqrxw" isMarkerVisible="true">
+        <dc:Bounds x="385" y="275" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0sihc7f_di" bpmnElement="SequenceFlow_0sihc7f">
+        <di:waypoint x="340" y="300" />
+        <di:waypoint x="385" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_105ok6h_di" bpmnElement="SequenceFlow_105ok6h">
+        <di:waypoint x="435" y="300" />
+        <di:waypoint x="500" y="300" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="457" y="282" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_0dy1nu0_di" bpmnElement="Task_0u2fy39">
+        <dc:Bounds x="500" y="260" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_04gmcr0_di" bpmnElement="Task_0xcpgnu">
+        <dc:Bounds x="650" y="260" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveGateway_11asa5h_di" bpmnElement="ExclusiveGateway_11asa5h" isMarkerVisible="true">
+        <dc:Bounds x="785" y="275" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0dy6w8b_di" bpmnElement="SequenceFlow_0dy6w8b">
+        <di:waypoint x="750" y="300" />
+        <di:waypoint x="785" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0ul7rvf_di" bpmnElement="SequenceFlow_0ul7rvf">
+        <di:waypoint x="835" y="300" />
+        <di:waypoint x="890" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_114fs4j_di" bpmnElement="Task_09m29he">
+        <dc:Bounds x="890" y="260" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_1ruf7fs_di" bpmnElement="EndEvent_1ruf7fs">
+        <dc:Bounds x="792" y="522" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1krlqb0_di" bpmnElement="SequenceFlow_1krlqb0">
+        <di:waypoint x="940" y="340" />
+        <di:waypoint x="940" y="540" />
+        <di:waypoint x="828" y="540" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0lbpwv8_di" bpmnElement="SequenceFlow_0lbpwv8">
+        <di:waypoint x="810" y="325" />
+        <di:waypoint x="810" y="390" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_02fn8fk_di" bpmnElement="SequenceFlow_02fn8fk">
+        <di:waypoint x="410" y="325" />
+        <di:waypoint x="410" y="430" />
+        <di:waypoint x="760" y="430" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="414" y="375" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_19n9krs_di" bpmnElement="SequenceFlow_19n9krs">
+        <di:waypoint x="810" y="470" />
+        <di:waypoint x="810" y="522" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_1mh1w4w_di" bpmnElement="Task_1m6sxwo">
+        <dc:Bounds x="760" y="390" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0g1n405_di" bpmnElement="SequenceFlow_0g1n405">
+        <di:waypoint x="600" y="300" />
+        <di:waypoint x="650" y="300" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

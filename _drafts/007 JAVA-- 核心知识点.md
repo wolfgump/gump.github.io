@@ -30,3 +30,25 @@ ServiceLoader可以加载不同jar下的META-INF/services/
 
 当一个类加载器收到类加载任务时，会先交给自己的父加载器去完成，因此最终加载任务都会传递到最顶层的BootstrapClassLoader，只有当父加载器无法完成加载任务时，才会尝试自己来加载。
 
+## HashMap
+
+hash算法：
+
+```java
+//计算Hash
+static final int hash(Object key) {
+        int hash;
+        return key == null ? 0 : (hash = key.hashCode()) ^ hash >>> 16;
+ }
+//计算Index
+int index = hash(key) & (capacity - 1)
+```
+
+求Hash:
+
+获取对象的hashcode以后，先进行移位运算，然后再和自己做异或运算，即：hashcode ^ (hashcode >>> 16)，这一步甚是巧妙，是将高16位移到低16位，这样计算出来的整型值将“具有”高位和低位的性质;
+
+求Index:
+
+因为 A % B = A & (B - 1)，所以，(h ^ (h >>> 16)) & (capitity -1) = (h ^ (h >>> 16)) % capitity，可以看出这里本质上是使用了「除留余数法」
+
