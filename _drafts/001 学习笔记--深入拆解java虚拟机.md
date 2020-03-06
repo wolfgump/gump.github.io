@@ -113,6 +113,12 @@ JDBC(https://www.jianshu.com/p/09f73af48a98)、SPI
 
 ## 虚拟机的性能监控和故障处理工具
 
+### 影响性能的关键因素
+
+thread control, disk I/O, database access, network I/O, and garbage collection (GC).
+
+工具介绍：https://www.alibabacloud.com/blog/jprofiler-best-practices-powerful-performance-diagnostic-tool_594958
+
 ### JDK自带工具
 
 - jps:虚拟机进程状况工具
@@ -128,10 +134,18 @@ JDBC(https://www.jianshu.com/p/09f73af48a98)、SPI
   - 用来查找死锁
   - 排查CPU使用率高，找到对应线程
   - 响应慢或无响应
+  
+- JVisual 界面工具
 
-### 堆分析工具
+### JDK外更先进的分析工具
 
-MAT
+- 堆分析工具
+
+​       MAT、Perfma、JProfiler
+
+- 栈分析工具
+
+  Perfma、JProfiler
 
 ### 通过字节码增强不修改代码查看线上问题工具
 
@@ -143,7 +157,31 @@ MAT
 
 - SkyWalking
 
-**问题排查思路：首先看系统的负载，如果是内存高，用jmap去dump堆内存，然后使用MAT分析可能的内存泄漏；如果是CPU过高，用jstack去dump线程，对比多次dump文件的runnable线程;**
+###问题排查思路
+
+首先看系统的负载，
+
+- 如果是内存高
+
+  用jmap去dump堆内存，然后使用MAT分析可能的内存泄漏；具体到代码层面考虑以下点：
+
+  - 是否一次在数据或者网络加载了过多的数据，
+  - 是否存在了磁盘/网络IO没有关闭，
+  - 是否有用到类似ThreadLocal和线程池一起用没有remove
+
+- 如果是CPU过高，
+
+  用jstack去dump线程，对比多次dump文件的runnable线程、或借助JProfiler分析死锁;具体代码层面考虑：
+
+  - 是否有死循环
+  - 递归的层次是否太深或者没有出口
+  - 是否有死锁
+
+- 如果CPU利用持续率走低,接口响应慢 
+  - 是否存在磁盘/IO阻塞
+  - 网络IO是否未设置超时时间一直等待
+  - 线程池里线程数量是否太少，如HttpClient的默认连接池只有2个
+  - GC配置是否合理，是否FullGC次数多
 
 ## 程序编译和代码优化
 
