@@ -1,0 +1,208 @@
+### Mysql 事物  一致性 隔离性
+隔离性主要区别在读
+RR RC 使用MVVC+排他锁
+RR 写（当前读）会加间隙 
+java spring 同类方法调用 expection不回滚
+mysql 默认RR的原因是5.0以前binlog设计只支持statment,  RR更多应用场景是在报表中
+### 分布式事物 CAP
+互联网场景 AP 保系统高可用，最终一致性
+强交易场景 CP 保强一致性，短暂不可用
+### threadlocal
+localThreadMap key:this(threadLocal) value:T
+弱引用 
+```
+public void set(T value) {
+​        Thread t = Thread.currentThread();
+​        ThreadLocalMap map = getMap(t);
+​        if (map != null)
+​            map.set(this, value);
+​        else
+​            createMap(t, value);
+​    }
+
+void createMap(Thread t, T firstValue) {
+​        t.threadLocals = new ThreadLocalMap(this, firstValue);
+​    }
+ public T get() {
+​        Thread t = Thread.currentThread();
+​        ThreadLocalMap map = getMap(t);
+​        if (map != null) {
+​            ThreadLocalMap.Entry e = map.getEntry(this);
+​            if (e != null) {
+​                @SuppressWarnings("unchecked")
+​                T result = (T)e.value;
+​                return result;
+​            }
+​        }
+​        return setInitialValue();
+​    }
+```
+
+强引用》软引用》弱引用》虚引用
+### jvm
+类加载器 内置加载器 自定义加载器  
+双亲委派机制：某个特定类加载器在接到加载类的请求时，首先将加载任务委托给父类加载器，依次递归
+类唯一标识：类加载器+全限定包名+类名
+加载过程：加载--链接（验证、准备、解析）--初始化--使用--卸载
+内存管理：程序计数器、虚拟机栈、本地方法栈、堆、方法区、对象访问
+栈：存放局部变量、方法出口信息、操作数栈、动态链接
+垃圾收集器：serial parallel(jdk 1.8 标记 扫描 整理) cms g1(jdk 1.9 不再区分新生代 老年代)
+
+jvm调优：调整堆大小 最大最小一样 调整年轻代 老年的比例 打印outofmemorydump gc detail
+
+jmap 生成dump文件 jconsole 可视化工具
+jmap查看大对象  jstack 查到线程调用堆栈 top 查看cpu占用高进程
+### OutOfMemory StackOverFlow 示例
+StackOverFlow 递归无出口
+OutOfMemory 堆内存不足
+### 变量存在位置
+记住两条黄金法则：
+ #### 引用类型总是被分配到“堆”上。不论是成员变量还是局部
+ #### 基础类型总是分配到它声明的地方：成员变量在堆内存里，局部变量在栈内存
+局部变量：栈区；引用变量 声明在栈 存储在堆
+成员变量：堆区
+### B+ tree,红黑树，二叉查找树，ALV树
+二叉查找树：可能退化成一个链
+ALV树： 平衡二叉树 左右子树高度相差不超过1 通过旋转来达到 旋转耗时 由于维护这种高度平衡所付出的代价比从中获得的效率收益还大,故而实际的应用不多
+红黑树：读取弱于ALV树 插入删除强于ALV树  多用在内存排序
+B+树：磁盘友好的数据结构 
+​    1.树的非叶子结点里面没有数据，这样索引比较小，可以放在一个blcok（或者尽可能少的blcok）里面，可以降低io的次数
+​    2.B+树只要遍历叶子节点就可以实现整棵树的遍历（叶子节点构成了一个链表）
+### mysql索引
+TODO
+### Redis
+
+单线程：内存操作 避免线程切换开销  瓶颈在IO,NIO多路复用
+
+lua:原子操作、高性能、可复用
+数据淘汰策略：惰性策略+定期策略  取20个key 遍历取值 超过25%继续执行取20 时间上线和频次上线
+缓存穿透：查询一个一定不存在的key;查出为空也缓存 设置一个较短的过期时间
+缓存雪崩：设置随机的过期时间 或者缓存过期后加互斥锁
+事物：将多个命令打包 一次性 顺序性执行
+部署：单节点 主备  哨兵
+
+
+### 扣库存
+
+redis原子减，lua脚本
+
+### dubbo 协议 序列化 上下线整个过程
+Service Provider Interface (SPI)
+### zk 
+leader选举:
+ZXID（事物ID，master分配，初始为0） myId，优先ZXID 然后myid
+
+CP  leader会导致集群短暂不可用
+### euraka
+AP 各节点是平等的
+### jetty nginx
+### 高并发处理
+垂直扩展：硬件 缓存 熔断 服务降级
+水平扩展：nginx  微服务 分库分表
+### 接口 抽象类
+接口：用来对类的行为进行约束； 不能实例化；不能包含method body; 工厂模式，代理
+抽象类：为了代码的复用；      不能实例化；可以包含method body;
+### 单例 
+DCL
+```
+public class Singleton {  
+​      private volatile static Singleton singleton;  
+​      private Singleton (){
+​      }   
+​      public static Singleton getInstance() {  
+​      if (instance== null) {  
+​          synchronized (Singleton.class) {  
+​          if (instance== null) {  
+​              instance= new Singleton();  
+​          }  
+​         }  
+​     }  
+​     return singleton;  
+​     }  
+ }  
+```
+ ### 锁
+ https://tech.meituan.com/2018/11/15/java-lock.html
+ ###  synchronized reetrantlock volitle
+       volite 可见性 不保证原子性
+       reetrantlock 默认非公平锁 可以实现公平锁
+       synchronized 默认非公平锁
+
+### transient 不序列化
+### 数据结构
+HashMap：key value 可以null;非线程安全；bucket(默认大小16)中存的是entry;负载因子0.75，超过数据75%  扩容两倍  rehasing ；冲突元素达到8 红黑树 降到6 链表；
+HashIterator: nextNode 判断modCount==expectCount;remove 会设置modCount==expectCount; hashmap.remove只会modCount++ 所有循环调用hashmap.remove时 在nextNode时会报ConcurrentModificationException；这么设计的原因是hashmap是线程不安全的，hashmap采用fast fail 报ConcurrentModificationException来导致多线程问题
+HashTable:key value 不可以null;线程安全；
+ConcurrentHashMap: 读不加锁 通过volitle,写加锁通过segment,默认16个
+### object
+###  final static String 
+### 面向对象设计原则
+  单一原则（SRP） 开闭原则（OCP） 里氏替换原则 （LCP）依赖倒转原则（DIP） 接口隔离原则（ISP） 合成复用原则（CRP） 迪米特原则（LoD）
+### 并发编程
+    原子性 可见新 有序性
+### 设计模式
+
+### 排序
+
+### 长链接 短连接
+长链接：适用客户端少  效率高 (dubbo)
+短链接：使用客户端量大 http
+### http
+请求过程：https://www.jianshu.com/p/6462e69ce241
+
+### NIO BIO
+BIO方式适用于连接数目比较小且固定的架构，这种方式对服务器资源要求比较高，并发局限于应用
+NIO方式适用于连接数目多且连接比较短（轻操作）的架构，(Netty，MINA)
+### netty
+粘包 拆包：1.固定长度 2.报文头 3.特殊字符
+IO多路复用：一个线程通过记录IO流的状态来同时管理多个io,可以提高服务器吞吐能力
+###序列化协议：
+xml 优点：人机可读性好 缺点：文件大
+json 优点：可读性好 数据小 缺点：描述性比xml差
+protobuf 优点：性能高 缺点：需要依赖工具生成代码
+### 线程
+#### 线程通信机制：共享变量 消息
+
+#### 线程池
+### 反射
+Class.forName 加载 连接 初始化 ；执行了static块和静态变量
+ClassLoader 加载
+### Spring 
+bean 循环依赖：延迟加载
+事物原理：AOP
+### JUC
+### String final
+线程安全 效率  字符串池
+
+
+
+### 常用工具
+
+1.排查CPU占用
+top  查看进程
+top -Hp 查看线程
+printf  "%x\n"  线程id
+
+2.排查内存占用
+jmap:heap memory details
+jstack:stack trace
+- jmap -heap pid  堆内存使用情况 
+- jmap -histo:live pid  对象内存占用情况
+- jmap  -dump:format=b,file=文件名 [pid]  转储文件  jvisualvm(小文件)  mat(大文件)对比两个不同时间段哪个对象增长比较多
+jstack -l 检查死锁
+jstat -gcutil pid 查看堆内存使用情况
+
+
+3.线上问题排查
+btrace  btrace demo里的示例基本够用
+
+4.jar包冲突
+  打出所有依赖：mvn dependency:tree > ~/denpency.txt
+  打印类加载信息： vm启动参数加入  -XX:+TraceClassLoading
+  maven helper
+5.vm options
+  -XX:+HeapDumpOnOutOfMemoryError -XX:+HeapDumpPath=/home/admin/logs/java.hprof
+
+### 新技能
+ 精细控制QPS: RateLimiter
+
