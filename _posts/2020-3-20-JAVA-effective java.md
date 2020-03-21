@@ -8,7 +8,7 @@ header-style: text
 date: 2020-3-20 20:30:21 +0800
 tags:
     - Java 
-    - 学习笔记
+    - 笔记
 ---
 
 # effective java
