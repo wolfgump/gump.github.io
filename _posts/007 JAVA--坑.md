@@ -1,0 +1,82 @@
+# 坑
+
+## 同类调用
+
+- trancation 同类调用不起作用
+- Aysnc 同类调用不起作用 
+
+## Stream 副作用
+
+> 特别说明：副作用不应该被滥用，也许你会觉得在Stream.forEach()里进行元素收集是个不错的选择，就像下面代码中那样，但遗憾的是这样使用的正确性和效率都无法保证，因为Stream可能会并行执行。大多数使用副作用的地方都可以使用[归约操作](https://github.com/CarpenterLee/JavaLambdaInternals/blob/master/5-Streams API(II).md)更安全和有效的完成
+
+```java
+// 错误的收集方式
+ArrayList<String> results = new ArrayList<>();
+stream.filter(s -> pattern.matcher(s).matches())
+      .forEach(s -> results.add(s));  // Unnecessary use of side-effects!
+// 正确的收集方式
+List<String>results =
+     stream.filter(s -> pattern.matcher(s).matches())
+             .collect(Collectors.toList());  // No side-effects!
+```
+
+## 可关闭对象一定要关闭
+
+> 数据库连接,http连接
+
+## Fegin 自动将Get转Post
+
+feign会判断body中有值，自动将Get转Post;
+
+解决办法：集成feign的RequestInterceptor拦截请求，Get请求Body中有值，将Body中的放到param中去；
+
+## Spring + Redis +Lua
+
+Spring Redis默认的序列化方式是JDK的序列化，序列化出来的结果是含有乱码的，这个时候如果在Lua中去判断两个值==会失败，解决办法是手动指定RedisTemplate的序列化方式为StringRedisSerializer
+
+## Integer.getInteger(String s)
+
+不是将String转Integer的方法，这个方法是用来获取系统变量中等于s的整数的值；
+
+同样，Boolean.getBoolean(String s)
+
+## Docker Compose 使用本地Dockerfile,DockerFile更改不生效
+
+使用docker compose 构建本地的dockerfile时，如果构建过一次，compose默认会使用已有的imgage,不会再重新构建，要删除本地的image
+
+```yaml
+version: '3'
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8088:8080"
+```
+
+一定要在日志中出现下方image的构建过程才Dockerfile的修改才生效
+
+```shell
+Creating network "zmbiz-halo-flow-start_default" with the default driver
+Building web
+Step 1/5 : FROM tomcat:latest
+ ---> 6408fdc94212
+Step 2/5 : WORKDIR /opt/settings/
+ ---> Using cache
+ ---> e01a072d148e
+Step 3/5 : RUN echo 'env=FAT' > server.properties
+ ---> Running in 37f8f00bf018
+Removing intermediate container 37f8f00bf018
+ ---> 52551cd27273
+Step 4/5 : RUN echo 'image created'
+ ---> Running in 348cabc09688
+image created
+Removing intermediate container 348cabc09688
+ ---> 69706d7c9b6f
+Step 5/5 : ADD /target/zmbiz-halo-flow-start-1.0.0-SNAPSHOT /usr/local/tomcat/webapps/ROOT/
+ ---> 305abfd02490
+Successfully built 305abfd02490
+Successfully tagged zmbiz-halo-flow-start_web:latest
+```
+
