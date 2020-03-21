@@ -103,10 +103,7 @@ page-mathjax: false
 # Friends
 friends: [
     {
-        title: "Example Friends",
-        href: "#"
-    },{
-        title: "It helps SEO",
-        href: "#"
+        title: "wolfgump",
+        href: "https://wolfgump.com"
     }
 ]
