@@ -1014,7 +1014,7 @@ samp {
 .intro-header {
   background: no-repeat center center;
   background-color: black;
-  height: 40px;
+  height: 300px;
   background-attachment: scroll;
   -webkit-background-size: cover;
   -moz-background-size: cover;
@@ -1027,7 +1027,7 @@ samp {
 .intro-header.style-text .post-heading,
 .intro-header.style-text .page-heading {
   padding: 85px 0 20px;
-  color: #404040;
+  color: #000;
 }
 .intro-header.style-text .site-heading .subheading,
 .intro-header.style-text .post-heading .subheading,
@@ -1061,7 +1061,7 @@ samp {
   .intro-header .site-heading,
   .intro-header .post-heading,
   .intro-header .page-heading {
-    padding: 150px 0;
+    padding: 60px 0;
   }
 }
 .intro-header .site-heading {

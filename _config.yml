@@ -59,10 +59,10 @@ kramdown:
 
 
 # Disqus settings
-disqus_username: adolphwollf
+#disqus_username: adolphwollf
 
 # Netease settings
-netease_comment: false
+#netease_comment: false
 
 
 
