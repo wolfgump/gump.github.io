@@ -78,7 +78,7 @@ ga_domain: wolfgump.com
 
 # Sidebar settings
 sidebar: true                           # whether or not using Sidebar.
-sidebar-about-description: ""
+sidebar-about-description: "Java开发工程师，曾就职携程、阿里云，花名义和"
 sidebar-avatar: /img/avatar-hux.jpg      # use absolute URL, seeing it's used in both `/` and `/about/`
 
 
