@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Welcome to my blog"
-subtitle: 'Welcome'
+subtitle: ''
 comments: false
 author: "Gump"
 header-style: text
