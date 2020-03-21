@@ -1014,7 +1014,7 @@ samp {
 .intro-header {
   background: no-repeat center center;
   background-color: black;
-  height: 50px;
+  height: 250px;
   background-attachment: scroll;
   -webkit-background-size: cover;
   -moz-background-size: cover;
@@ -1061,7 +1061,7 @@ samp {
   .intro-header .site-heading,
   .intro-header .post-heading,
   .intro-header .page-heading {
-    padding: 150px 0;
+    padding: 60px 0;
   }
 }
 .intro-header .site-heading {
@@ -1069,7 +1069,7 @@ samp {
 }
 @media only screen and (min-width: 768px) {
   .intro-header .site-heading {
-    padding: 150px 0;
+    padding: 60px 0;
   }
 }
 .intro-header .site-heading,
