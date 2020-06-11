@@ -1,4 +1,5 @@
 ---
+
 layout: post
 title: "DevOps"
 subtitle: 'DevOps RoadMap'
@@ -11,13 +12,17 @@ tags:
     - 笔记
 ---
 
+# RoadMap
+
+> https://github.com/kamranahmedse/developer-roadmap
+
 ##  构建
 
 maven
 
 ##  代码管理
 git
-##  持续集成
+##  持续集成(CI/CD)
 Jenkins、Bamboo、drone、Travis CI
 ##  容器
 docker
@@ -32,11 +37,8 @@ swarm
 
 - Marathon(A container orchestration platform for Mesos and DC/OS) +DC/OS (the Distributed Cloud Operating System)+Mesos
 
-
-
 ## 配置
 Puppet Enterprise、Ansible、etcd
-## 监控
-Nagios、 Raygun、grafana、zipkin
+## 监控(APM)
 
-https://github.com/kamranahmedse/developer-roadmap
+grafana(UI)、zipkin、micrometer、skywalking、Nagios、 Raygun、Zabbix(机器监控)
