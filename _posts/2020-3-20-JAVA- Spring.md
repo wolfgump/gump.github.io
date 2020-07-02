@@ -16,7 +16,20 @@ tags:
 
 ## Bean生命周期
 
-![image-20191224144101776](/Users/ganshitao/Documents/Doc/markdown-image/image-20191224144101776.png)
+1、解析Bean配置信息，將配置信息转换为BeanDefinition对象，注册到BeanDefinitionRegistry中。
+
+2、执行所有的BeanFactoryPostProcessor的postProcessBeanFactory（）方法对Bean工厂信息进行修改，包括修改或新增BeanDefinition对象。
+
+注意：如果需要控制BeanFactoryPostProcessor的执行顺序需要实现PriorityOrdered接口，getOrder（）方法返回的值越小，执行优先级越高。
+
+3、通过BeanDefinition对象实例化所有Bean，注入依赖。
+
+4、执行所有BeanPostProcessor对象的postProcessBeforeInitialization（）方法。
+
+5、执行Bean的初始化方法，例如InitializingBean接口的afterPropertiesSet方法，或init-method属性指定的方法。
+
+执行所有BeanPostProcessor对象的postProcessAfterInitialization（）方法
+
 
 ## IOC容器
 
@@ -64,4 +77,26 @@ ApplicationContextAware接口，实现了这个接口的类都可以获取到一
 ## EnvironmentAware
 
 凡注册到Spring容器内的bean，实现了EnvironmentAware接口重写setEnvironment方法后，在工程启动时可以获得application.properties的配置文件配置的属性值。
+
+
+
+# spring boot
+
+# spring cloud
+
+## spring cloud netfix
+
+**feature**
+
+- Service Discovery: Eureka instances can be registered and clients can discover the instances using Spring-managed beans
+- Service Discovery: an embedded Eureka server can be created with declarative Java configuration
+- Circuit Breaker: Hystrix clients can be built with a simple annotation-driven method decorator
+- Circuit Breaker: embedded Hystrix dashboard with declarative Java configuration
+- Client Side Load Balancer: Ribbon
+- External Configuration: a bridge from the Spring Environment to Archaius (enables native configuration of Netflix components using Spring Boot conventions)
+- Router and Filter: automatic registration of Zuul filters, and a simple convention over configuration approach to reverse proxy creation
+
+Q:为什么在Spring Cloud项目中可以直接在配置文件中配置Hystrix属性？
+
+A:Hystrix用Archaius做了动态配置，Spring cloud桥接了Archaius,所以spring cloud的配置文件相对于Hsytrix的配置文件
 

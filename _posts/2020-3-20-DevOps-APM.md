@@ -34,9 +34,17 @@ Metric - can identify trends
 
 Trace - identify cause across services 
 
-## Micrometer
+## Logging技术栈
 
-### 概念
+ELK
+
+##Metrics 技术栈
+
+### Micrometer
+
+Metrics界的log4j; 背后可以接各种具体的Metric实现，如prometheus、influxdb、JMX、zabbix
+
+#### 概念
 
 - Counter: 
 
@@ -59,3 +67,10 @@ Trace - identify cause across services
   - 用途： measuring short-duration latencies, and the frequency of such events
   - 场景：
 
+### DropWizard metric
+
+
+
+## Trace 技术栈
+
+业界标准 OpenTracing,目前支持这个标准的有：Uber Jaeger、Twitter Zipkin和Apache Skywalking
