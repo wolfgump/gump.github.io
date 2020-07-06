@@ -16,6 +16,9 @@ tags:
 
 ## Bean生命周期
 
+<<<<<<< HEAD
+缺
+=======
 1、解析Bean配置信息，將配置信息转换为BeanDefinition对象，注册到BeanDefinitionRegistry中。
 
 2、执行所有的BeanFactoryPostProcessor的postProcessBeanFactory（）方法对Bean工厂信息进行修改，包括修改或新增BeanDefinition对象。
@@ -30,10 +33,54 @@ tags:
 
 执行所有BeanPostProcessor对象的postProcessAfterInitialization（）方法
 
+>>>>>>> 45b3fc6c0da084e866b8aa2c0d6b07ea9d9ecbd0
 
 ## IOC容器
 
 ioc容器是一个线程安全的hashmap,ConcurrentHashMap
+
+基类是：BeanFactory; 一个子类是：ApplicationContext,与BeanFactory有以下四个不同
+
+- Easier integration with Spring’s AOP features
+- Message resource handling (for use in internationalization)
+- Event publication
+- Application-layer specific contexts such as the `WebApplicationContext` for use in web applications.
+
+## 容器扩展点
+
+一般我们不需要再去实现一个ApplicationContext的子类，他提供了一系列的扩展点
+
+### **BeanPostProcessor**
+
+其存在于对象实例化阶段。跟BeanFactoryPostProcessor类似，它会处理容器内所有符合条件并且已经实例化后的对象。简单的对比，BeanFactoryPostProcessor处理bean的定义，而BeanPostProcessor则处理bean完成实例化后的对象
+
+### **BeanFactoryPostProcessor**
+
+在容器的启动阶段， BeanFactoryPostProcessor允许我们在容器实例化相应对象之前，对注册到容器的BeanDefinition所保存的信息做一些额外的操作，比如修改bean定义的某些属性或者增加其他信息等。
+
+### FactoryBean
+
+自己实现Bean的创建逻辑
+
+## 三种方式控制Bean的生命周期的行为
+
+- The [`InitializingBean`](https://docs.spring.io/spring-framework/docs/current/spring-framework-reference/core.html#beans-factory-lifecycle-initializingbean) and [`DisposableBean`](https://docs.spring.io/spring-framework/docs/current/spring-framework-reference/core.html#beans-factory-lifecycle-disposablebean) callback interfaces
+- Custom `init()` and `destroy()` methods
+- The [`@PostConstruct` and `@PreDestroy` annotations](https://docs.spring.io/spring-framework/docs/current/spring-framework-reference/core.html#beans-postconstruct-and-predestroy-annotations). You can combine these mechanisms to control a given bean.
+
+如果多种结合使用的话，顺序如下：
+
+1. Methods annotated with `@PostConstruct`
+2. `afterPropertiesSet()` as defined by the `InitializingBean` callback interface
+3. A custom configured `init()` method
+
+Destroy methods are called in the same order:
+
+1. Methods annotated with `@PreDestroy`
+2. `destroy()` as defined by the `DisposableBean` callback interface
+3. A custom configured `destroy()` method
+
+
 
 ## ObjectProvider
 
@@ -47,14 +94,6 @@ BeanDefinition容器，所有的Bean定义都注册在BeanDefinitionRegistry对�
 
 ImportBeanDefinitionRegistrar是一个接口，该接口的实现类作用于在Spring解析Bean配置生成BeanDefinition对象阶段。
 在Spring解析Configuration注解时，向Spring容器中增加额外的BeanDefinition。
-
-## BeanFactoryPostProcessor
-
-在容器的启动阶段， BeanFactoryPostProcessor允许我们在容器实例化相应对象之前，对注册到容器的BeanDefinition所保存的信息做一些额外的操作，比如修改bean定义的某些属性或者增加其他信息等。
-
-## BeanPostProcessor
-
-其存在于对象实例化阶段。跟BeanFactoryPostProcessor类似，它会处理容器内所有符合条件并且已经实例化后的对象。简单的对比，BeanFactoryPostProcessor处理bean的定义，而BeanPostProcessor则处理bean完成实例化后的对象
 
 ## Aware
 
@@ -80,7 +119,13 @@ ApplicationContextAware接口，实现了这个接口的类都可以获取到一
 
 
 
-# spring boot
+# Spring Boot
+
+## ApplicationRunner  CommandLineRunner
+
+If you need to run some specific code once the `SpringApplication` has started, you can implement the `ApplicationRunner` or `CommandLineRunner` interfaces
+
+
 
 # spring cloud
 
@@ -99,4 +144,3 @@ ApplicationContextAware接口，实现了这个接口的类都可以获取到一
 Q:为什么在Spring Cloud项目中可以直接在配置文件中配置Hystrix属性？
 
 A:Hystrix用Archaius做了动态配置，Spring cloud桥接了Archaius,所以spring cloud的配置文件相对于Hsytrix的配置文件
-
